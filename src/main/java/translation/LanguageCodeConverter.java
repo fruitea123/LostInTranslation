@@ -42,31 +42,16 @@ public class LanguageCodeConverter {
             iterator.next(); // skip the first line
             while (iterator.hasNext()) {
                 String line = iterator.next();
-                if (line.isEmpty()) continue;
-
-
-                String[] cols = line.split("\\t");
-                String languageName = null;
-                String code = null;
-
-                for (String col : cols) {
-                    String v = col.trim();
-                    if (v.isEmpty()) continue;
-
-
-                    if (code == null && v.matches("(?i)^[a-z]{2}(-[a-z]{2})?$")) {
-                        code = v.toLowerCase();
-                    } else if (languageName == null) {
-
-                        languageName = v;
-                    }
+                String[] parts = line.split("\t");
+                String code = parts[parts.length -1];
+                StringBuilder language_name_build =  new StringBuilder();
+                for(int i = 0; i < parts.length -1; i++) {
+                    if (i>0) language_name_build.append(" ");
+                    language_name_build.append(parts[i]);
                 }
-
-                if (code != null && languageName != null) {
-                    String nameLower = languageName.toLowerCase();
-                    languageCodeToLanguage.put(code, languageName);
-                    languageToLanguageCode.put(nameLower, code);
-                }
+                String language_name =  language_name_build.toString();
+                languageCodeToLanguage.put(code, language_name);
+                languageToLanguageCode.put(language_name, code);
             }
 
         } catch (IOException | URISyntaxException ex) {
@@ -92,7 +77,7 @@ public class LanguageCodeConverter {
      */
     public String fromLanguage(String language) {
         if (language == null) return null;
-        language =  languageToLanguageCode.get(language.toLowerCase());
+        language =  languageToLanguageCode.get(language);
         return language;
     }
 
