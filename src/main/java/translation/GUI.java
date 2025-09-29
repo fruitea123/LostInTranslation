@@ -1,9 +1,7 @@
 package translation;
 
 import javax.swing.*;
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.Font;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +22,9 @@ public class GUI {
             JFrame frame = new JFrame("Country Name Translator");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setSize(700, 500);
-            frame.setLayout(new BorderLayout(10, 10));
+
+            JPanel mainPanel = new JPanel();
+            mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
             JPanel langPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
             JLabel langLabel = new JLabel("Language:");
@@ -33,18 +33,24 @@ public class GUI {
             langPanel.add(langLabel);
             langPanel.add(languageCombo);
 
+            JLabel resultLabel = new JLabel("Translation: ");
+            resultLabel.setFont(new Font("SansSerif", Font.PLAIN, 16));
+            resultLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+
             List<String> allCountries = new ArrayList<>(countryConv.getAllCountries());
             JList<String> countryList = new JList<>(allCountries.toArray(new String[0]));
             countryList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             JScrollPane countryScroll = new JScrollPane(countryList);
+            countryScroll.setAlignmentX(Component.CENTER_ALIGNMENT);
+            countryScroll.setPreferredSize(new Dimension(600, 300));
 
-            JLabel resultLabel = new JLabel("Translation: ");
-            resultLabel.setFont(new Font("SansSerif", Font.PLAIN, 16));
-            resultLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            mainPanel.add(langPanel);
+            mainPanel.add(resultLabel);
+            mainPanel.add(countryScroll);
 
-            frame.add(langPanel, BorderLayout.NORTH);
-            frame.add(countryScroll, BorderLayout.CENTER);
-            frame.add(resultLabel, BorderLayout.SOUTH);
+            frame.setContentPane(mainPanel);
+
 
             Runnable updateTranslation = () -> {
                 String langName = (String) languageCombo.getSelectedItem();
