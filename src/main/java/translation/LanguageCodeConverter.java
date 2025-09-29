@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class provides the services of: <br/>
@@ -74,7 +77,7 @@ public class LanguageCodeConverter {
      */
     public String fromLanguage(String language) {
         if (language == null) return null;
-        language =  languageToLanguageCode.get(language.toLowerCase());
+        language =  languageToLanguageCode.get(language);
         return language;
     }
 
@@ -84,9 +87,5 @@ public class LanguageCodeConverter {
      */
     public int getNumLanguages() {
         return languageCodeToLanguage.size();
-    }
-
-    public List<String> getAllLanguages() {
-        return new ArrayList<>(languageCodeToLanguage.values());
     }
 }

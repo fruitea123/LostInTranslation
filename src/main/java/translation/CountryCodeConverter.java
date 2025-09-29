@@ -57,7 +57,7 @@ public class CountryCodeConverter {
      */
     public String fromCountryCode(String code) {
         // TODO Task B: update this code to use an instance variable to return the correct value
-        return countryCodeToCountry.get(code.toLowerCase());
+        return countryCodeToCountry.get(code);
     }
 
     /**
@@ -67,7 +67,7 @@ public class CountryCodeConverter {
      */
     public String fromCountry(String country) {
         // TODO Task B: update this code to use an instance variable to return the correct value
-        return countryToCountryCode.get(country.toLowerCase());
+        return countryToCountryCode.get(country);
     }
 
     /**
@@ -78,9 +78,5 @@ public class CountryCodeConverter {
         // TODO Task B: update this code to use an instance variable to return the correct value
 
         return countryCodeToCountry.size();
-    }
-
-    public List<String> getAllCountries() {
-        return new ArrayList<>(countryCodeToCountry.values());
     }
 }
