@@ -38,14 +38,14 @@ public class GUI {
         JPanel header = new JPanel();
         header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
 
-        // row 1: Language (左对齐)
+        // row 1: Language 
         JPanel langRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         langRow.add(new JLabel("Language:"));
         JComboBox<String> languageCombo = new JComboBox<>(languages.toArray(new String[0]));
         languageCombo.setPrototypeDisplayValue("Portuguese (Brazil)     ");
         langRow.add(languageCombo);
 
-        // row 2: Translation (居中)
+        // row 2: Translation
         JPanel translationRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 0));
         JLabel translationPrefix = new JLabel("Translation: ");
         JLabel resultLabel = new JLabel(" ");
