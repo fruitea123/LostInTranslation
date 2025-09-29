@@ -34,7 +34,7 @@ public class LanguageCodeConverter {
                 String[] parts = line.split("\\t");
                 if (parts.length < 2) continue;
 
-                // 末列是代码；前面的列拼成语言名（兼容名称里有空格或额外列）
+               
                 String code = parts[parts.length - 1].trim().toLowerCase();
 
                 StringBuilder nameBuilder = new StringBuilder();
@@ -47,7 +47,7 @@ public class LanguageCodeConverter {
                 String languageName = nameBuilder.toString();
                 if (languageName.isEmpty()) continue;
 
-                // 统一用小写作为 key，避免大小写导致的查不到
+     
                 languageCodeToLanguage.put(code, languageName);
                 languageToLanguageCode.put(languageName.toLowerCase(), code);
             }
@@ -57,24 +57,24 @@ public class LanguageCodeConverter {
         }
     }
 
-    /** code -> language name (大小写不敏感) */
+    
     public String fromLanguageCode(String code) {
         if (code == null) return null;
         return languageCodeToLanguage.get(code.toLowerCase());
     }
 
-    /** language name -> code (大小写不敏感，返回小写) */
+ 
     public String fromLanguage(String language) {
         if (language == null) return null;
         return languageToLanguageCode.get(language.toLowerCase());
     }
 
-    /** 返回语言数量 */
+
     public int getNumLanguages() {
         return languageCodeToLanguage.size();
     }
 
-    /** ✅ 放在类里面：给 GUI 使用的全部语言名（去重并排序，保留原始大小写） */
+
     public java.util.Collection<String> getAllLanguageNames() {
         return new TreeSet<>(languageCodeToLanguage.values());
     }
