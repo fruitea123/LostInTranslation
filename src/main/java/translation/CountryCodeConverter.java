@@ -79,4 +79,8 @@ public class CountryCodeConverter {
 
         return countryCodeToCountry.size();
     }
+
+    public List<String> getAllCountries() {
+        return new ArrayList<>(countryCodeToCountry.values());
+    }
 }
