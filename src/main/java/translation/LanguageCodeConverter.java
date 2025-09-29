@@ -8,50 +8,48 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
-/**
- * This class provides the services of: <br/>
- * - converting language codes to their names <br/>
- * - converting language names to their codes
- */
 public class LanguageCodeConverter {
 
-    private final Map<String, String> languageCodeToLanguage = new HashMap<>();
-    private final Map<String, String> languageToLanguageCode = new HashMap<>();
+    private final Map<String, String> languageCodeToLanguage = new HashMap<>(); // code(lower) -> Name(original)
+    private final Map<String, String> languageToLanguageCode = new HashMap<>(); // name(lower) -> code(lower)
 
-    /**
-     * Default constructor that loads the language codes from "language-codes.txt"
-     * in the resources folder.
-     */
     public LanguageCodeConverter() {
         this("language-codes.txt");
     }
 
-    /**
-     * Overloaded constructor that allows us to specify the filename to load the language code data from.
-     * @param filename the name of the file in the resources folder to load the data from
-     * @throws RuntimeException if the resources file can't be loaded properly
-     */
     public LanguageCodeConverter(String filename) {
-
         try {
-            List<String> lines = Files.readAllLines(Paths.get(getClass()
-                    .getClassLoader().getResource(filename).toURI()));
+            List<String> lines = Files.readAllLines(
+                    Paths.get(getClass().getClassLoader().getResource(filename).toURI()));
 
-            Iterator<String> iterator = lines.iterator();
-            iterator.next(); // skip the first line
-            while (iterator.hasNext()) {
-                String line = iterator.next();
-                String[] parts = line.split("\t");
-                String code = parts[parts.length -1];
-                StringBuilder language_name_build =  new StringBuilder();
-                for(int i = 0; i < parts.length -1; i++) {
-                    if (i>0) language_name_build.append(" ");
-                    language_name_build.append(parts[i]);
+            Iterator<String> it = lines.iterator();
+            if (it.hasNext()) it.next(); // skip header
+
+            while (it.hasNext()) {
+                String line = it.next().trim();
+                if (line.isEmpty()) continue;
+
+                String[] parts = line.split("\\t");
+                if (parts.length < 2) continue;
+
+                // 末列是代码；前面的列拼成语言名（兼容名称里有空格或额外列）
+                String code = parts[parts.length - 1].trim().toLowerCase();
+
+                StringBuilder nameBuilder = new StringBuilder();
+                for (int i = 0; i < parts.length - 1; i++) {
+                    String seg = parts[i].trim();
+                    if (seg.isEmpty()) continue;
+                    if (nameBuilder.length() > 0) nameBuilder.append(" ");
+                    nameBuilder.append(seg);
                 }
-                String language_name =  language_name_build.toString();
-                languageCodeToLanguage.put(code, language_name);
-                languageToLanguageCode.put(language_name, code);
+                String languageName = nameBuilder.toString();
+                if (languageName.isEmpty()) continue;
+
+                // 统一用小写作为 key，避免大小写导致的查不到
+                languageCodeToLanguage.put(code, languageName);
+                languageToLanguageCode.put(languageName.toLowerCase(), code);
             }
 
         } catch (IOException | URISyntaxException ex) {
@@ -59,33 +57,25 @@ public class LanguageCodeConverter {
         }
     }
 
-    /**
-     * Return the name of the language for the given language code.
-     * @param code the 2-letter language code
-     * @return the name of the language corresponding to the code
-     */
+    /** code -> language name (大小写不敏感) */
     public String fromLanguageCode(String code) {
         if (code == null) return null;
-        code = languageCodeToLanguage.get(code.toLowerCase());
-        return code;
+        return languageCodeToLanguage.get(code.toLowerCase());
     }
 
-    /**
-     * Return the code of the language for the given language name.
-     * @param language the name of the language
-     * @return the 2-letter code of the language
-     */
+    /** language name -> code (大小写不敏感，返回小写) */
     public String fromLanguage(String language) {
         if (language == null) return null;
-        language =  languageToLanguageCode.get(language);
-        return language;
+        return languageToLanguageCode.get(language.toLowerCase());
     }
 
-    /**
-     * Return how many languages are included in this language code converter.
-     * @return how many languages are included in this language code converter.
-     */
+    /** 返回语言数量 */
     public int getNumLanguages() {
         return languageCodeToLanguage.size();
+    }
+
+    /** ✅ 放在类里面：给 GUI 使用的全部语言名（去重并排序，保留原始大小写） */
+    public java.util.Collection<String> getAllLanguageNames() {
+        return new TreeSet<>(languageCodeToLanguage.values());
     }
 }

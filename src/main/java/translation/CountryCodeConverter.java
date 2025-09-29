@@ -11,72 +11,69 @@ import java.util.*;
  */
 public class CountryCodeConverter {
 
-    private Map<String, String> countryCodeToCountry = new HashMap<>();
-    private Map<String, String> countryToCountryCode = new HashMap<>();
+    private final Map<String, String> countryCodeToCountry = new HashMap<>(); // code(lower) -> name
+    private final Map<String, String> countryToCountryCode = new HashMap<>(); // name(lower) -> code(lower)
 
-    /**
-     * Default constructor that loads the country codes from "country-codes.txt"
-     * in the resources folder.
-     */
     public CountryCodeConverter() {
         this("country-codes.txt");
     }
 
-    /**
-     * Overloaded constructor that allows us to specify the filename to load the country code data from.
-     * @param filename the name of the file in the resources folder to load the data from
-     * @throws RuntimeException if the resources file can't be loaded properly
-     */
     public CountryCodeConverter(String filename) {
-
         try {
             List<String> lines = Files.readAllLines(Paths.get(getClass()
                     .getClassLoader().getResource(filename).toURI()));
 
             Iterator<String> iterator = lines.iterator();
-            iterator.next(); // skip the first line
-            while (iterator.hasNext()) {
-                String line = iterator.next();
-                String[] parts = line.split("\t");
-                // TODO Task B: use parts to populate the instance variables
-                countryCodeToCountry.put(parts[2].toLowerCase(),parts[0]);
-                countryToCountryCode.put(parts[0],parts[2].toLowerCase());
+            if (iterator.hasNext()) iterator.next(); // skip header
 
+            while (iterator.hasNext()) {
+                String line = iterator.next().trim();
+                if (line.isEmpty()) continue;
+
+                String[] parts = line.split("\\t");
+                if (parts.length < 3) continue;
+
+                String countryName = parts[0].trim();
+                String code = parts[2].trim().toLowerCase();
+
+                if (!countryName.isEmpty() && !code.isEmpty()) {
+                    countryCodeToCountry.put(code, countryName);
+                    countryToCountryCode.put(countryName.toLowerCase(), code);
+                }
             }
         }
         catch (IOException | URISyntaxException ex) {
             throw new RuntimeException(ex);
         }
-
     }
 
     /**
-     * Return the name of the country for the given country code.
-     * @param code the 3-letter code of the country
-     * @return the name of the country corresponding to the code
+     * Return the name of the country for the given country code (case-insensitive).
      */
     public String fromCountryCode(String code) {
-        // TODO Task B: update this code to use an instance variable to return the correct value
-        return countryCodeToCountry.get(code);
+        if (code == null) return null;
+        return countryCodeToCountry.get(code.toLowerCase());
     }
 
     /**
-     * Return the code of the country for the given country name.
-     * @param country the name of the country
-     * @return the 3-letter code of the country
+     * Return the code of the country for the given country name (case-insensitive).
      */
     public String fromCountry(String country) {
-        // TODO Task B: update this code to use an instance variable to return the correct value
-        return countryToCountryCode.get(country);
+        if (country == null) return null;
+        return countryToCountryCode.get(country.toLowerCase());
     }
 
     /**
      * Return how many countries are included in this country code converter.
-     * @return how many countries are included in this country code converter.
      */
     public int getNumCountries() {
-        // TODO Task B: update this code to use an instance variable to return the correct value
-
         return countryCodeToCountry.size();
+    }
+
+    /**
+     * Return all country names (sorted, unique).
+     */
+    public Collection<String> getAllCountryNames() {
+        return new TreeSet<>(countryCodeToCountry.values());
     }
 }
