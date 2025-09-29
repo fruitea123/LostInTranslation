@@ -6,9 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
-/**
- * This class provides the service of converting country codes to their names and back.
- */
+
 public class CountryCodeConverter {
 
     private final Map<String, String> countryCodeToCountry = new HashMap<>(); // code(lower) -> name
@@ -47,32 +45,23 @@ public class CountryCodeConverter {
         }
     }
 
-    /**
-     * Return the name of the country for the given country code (case-insensitive).
-     */
+ 
     public String fromCountryCode(String code) {
         if (code == null) return null;
         return countryCodeToCountry.get(code.toLowerCase());
     }
 
-    /**
-     * Return the code of the country for the given country name (case-insensitive).
-     */
+
     public String fromCountry(String country) {
         if (country == null) return null;
         return countryToCountryCode.get(country.toLowerCase());
     }
 
-    /**
-     * Return how many countries are included in this country code converter.
-     */
     public int getNumCountries() {
         return countryCodeToCountry.size();
     }
 
-    /**
-     * Return all country names (sorted, unique).
-     */
+
     public Collection<String> getAllCountryNames() {
         return new TreeSet<>(countryCodeToCountry.values());
     }
