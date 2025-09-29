@@ -17,7 +17,7 @@ public class GUI {
         // services
         LanguageCodeConverter langConv = new LanguageCodeConverter();
         CountryCodeConverter countryConv = new CountryCodeConverter();
-        Translator translator = new JSONTranslator(); // 你的 JSON 版实现
+        Translator translator = new JSONTranslator(); 
 
         // data for UI
         List<String> languages = new ArrayList<>(langConv.getAllLanguageNames());
